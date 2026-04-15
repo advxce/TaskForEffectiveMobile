@@ -24,14 +24,12 @@ class ChargingNotifyWorker(
 
         val channelId = "channel_id"
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val notificationChannel = NotificationChannel(
-                channelId,
-                "ChargeNotifyChannel",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
+        val notificationChannel = NotificationChannel(
+            channelId,
+            "ChargeNotifyChannel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        notificationManager.createNotificationChannel(notificationChannel)
 
         val notification = NotificationCompat.Builder(appContext, channelId)
             .setContentTitle("Device charging")
