@@ -40,6 +40,10 @@ android {
 }
 
 dependencies {
+
+    implementation("androidx.work:work-runtime-ktx:2.11.2")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

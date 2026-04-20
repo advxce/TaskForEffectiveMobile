@@ -1,5 +1,6 @@
 package com.example.taskforeffectivemobile
 
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils.replace
 import androidx.activity.enableEdgeToEdge
@@ -8,6 +9,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.work.Constraints
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 
 class MainActivity : AppCompatActivity(), Router{
 
@@ -19,6 +24,23 @@ class MainActivity : AppCompatActivity(), Router{
         setContentView(R.layout.activity_main)
 
         navigationManager(currentScreen)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(
+                arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                1001
+            )
+        }
+        val constraints = Constraints.Builder()
+            .setRequiresCharging(true)
+            .build()
+
+        val workRequest = OneTimeWorkRequestBuilder<ChargingNotifyWorker>()
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(this).enqueue(workRequest)
+
     }
 
     override fun navigateToNextScreen() {
