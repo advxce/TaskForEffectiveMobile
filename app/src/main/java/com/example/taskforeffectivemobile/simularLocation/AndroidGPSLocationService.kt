@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import java.util.Locale
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,6 +52,13 @@ class AndroidGPSLocationService : Service() {
             try {
                 locationProvider.startBackgroundUpdates()
                 Log.d("GPS_SERVICE", "Обновления геолокации запущены")
+                
+                // Подписываемся на обновления местоположения
+                locationProvider.getLocation().collect { result ->
+                    result.onSuccess { point ->
+                        updateNotification(point)
+                    }
+                }
             } catch (e: SecurityException) {
                 Log.e("GPS_SERVICE", "Ошибка разрешений: ${e.message}")
             }
@@ -97,14 +105,21 @@ class AndroidGPSLocationService : Service() {
         }
     }
 
-    private fun createNotification(): Notification {
+    private fun createNotification(contentText: String? = null): Notification {
+        val text = contentText ?: "Приложение отслеживает местоположение для работы карты"
         return NotificationCompat.Builder(this, "location_channel")
-            .setContentTitle("Геолокация активна")
-            .setContentText("Приложение отслеживает местоположение для работы карты")
+            .setContentTitle("Ваше местоположение")
+            .setContentText(text)
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)
             .build()
+    }
+
+    private fun updateNotification(point: Point) {
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val text = "Координаты: ${String.format(Locale.US, "%.5f", point.latitude)}, ${String.format(Locale.US, "%.5f", point.longitude)}"
+        notificationManager.notify(1, createNotification(text))
     }
 
     fun getLocationProvider(): AndroidGPSLocation = locationProvider
