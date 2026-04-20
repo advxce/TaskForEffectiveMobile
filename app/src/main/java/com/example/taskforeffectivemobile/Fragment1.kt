@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.fragment.app.Fragment
 import com.example.taskforeffectivemobile.databinding.Fragment1Binding
 
 class Fragment1: BaseFragment() {
@@ -17,7 +15,7 @@ class Fragment1: BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = Fragment1Binding.inflate(inflater,container, false)
+        binding = Fragment1Binding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -26,12 +24,12 @@ class Fragment1: BaseFragment() {
         binding.textView.text = "Fragment1"
     }
 
-    override fun getNextButton(): Button {
-        return binding.button
+    override fun setupNavigation() {
+        binding.button.setOnClickListener {
+            router?.navigateTo(Fragment2())
+        }
+        binding.button2.setOnClickListener {
+            router?.navigateBack()
+        }
     }
-
-    override fun getPreviousButton(): Button {
-        return binding.button2
-    }
-
 }

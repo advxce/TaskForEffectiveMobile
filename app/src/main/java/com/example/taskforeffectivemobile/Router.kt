@@ -1,16 +1,8 @@
 package com.example.taskforeffectivemobile
 
+import androidx.fragment.app.Fragment
+
 interface Router {
-
-    fun navigateToNextScreen()
-    fun navigateToPreviousScreen()
-
-    fun navigationManager(screen: Screen)
-
-}
-
-enum class Screen{
-    SCREEN_1,
-    SCREEN_2,
-    SCREEN_3
+    fun navigateTo(fragment: Fragment)
+    fun navigateBack()
 }

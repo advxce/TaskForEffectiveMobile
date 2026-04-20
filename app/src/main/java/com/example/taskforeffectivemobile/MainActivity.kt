@@ -1,59 +1,28 @@
 package com.example.taskforeffectivemobile
 
 import android.os.Bundle
-import android.text.TextUtils.replace
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 
-class MainActivity : AppCompatActivity(), Router{
-
-    private var currentScreen = Screen.SCREEN_1
+class MainActivity : AppCompatActivity(), Router {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        navigationManager(currentScreen)
-    }
-
-    override fun navigateToNextScreen() {
-       when(currentScreen){
-            Screen.SCREEN_1 -> {
-                currentScreen = Screen.SCREEN_2
-                replaceFragment(Fragment2())
-            }
-            Screen.SCREEN_2 -> {
-                currentScreen = Screen.SCREEN_3
-                replaceFragment(Fragment3())
-            }
-            Screen.SCREEN_3 -> {
-                currentScreen = Screen.SCREEN_1
-                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                replaceFragment(Fragment1())
-            }
+        if (savedInstanceState == null) {
+            navigateTo(Fragment1())
         }
-        println("currentScreen $currentScreen")
     }
 
-    override fun navigateToPreviousScreen() {
+    override fun navigateTo(fragment: Fragment) {
+        replaceFragment(fragment)
+    }
+
+    override fun navigateBack() {
         onBackPressedDispatcher.onBackPressed()
-    }
-
-    override fun navigationManager(screen: Screen) {
-
-        val currentFragment = when(screen){
-            Screen.SCREEN_1 -> Fragment1()
-            Screen.SCREEN_2 -> Fragment2()
-            Screen.SCREEN_3 -> Fragment3()
-        }
-
-        replaceFragment(currentFragment)
-        currentScreen = screen
     }
 
     private fun replaceFragment(fragment: Fragment) {
